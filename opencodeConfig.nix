@@ -46,7 +46,20 @@ in
       description = "Capture text/URLs into well-formed org-roam notes";
       mode = "primary";
       prompt = builtins.readFile ./prompts/capture.md + noPreambleSuffix;
-      tools = researchTools;
+      tools = researchTools // {
+        task = false;
+      };
+    };
+    crawler = {
+      description = "Read-only graph crawler: maps a topic across the org-roam graph and returns a digest";
+      mode = "subagent";
+      prompt = builtins.readFile ./prompts/crawler.md + noPreambleSuffix;
+      tools = researchTools // {
+        "org-roam_create_node" = false;
+        "org-roam_update_node" = false;
+        "org-roam_add_link" = false;
+        task = false;
+      };
     };
   };
 
@@ -60,6 +73,16 @@ in
       description = "Capture text or a URL into a new org-roam note";
       agent = "capture";
       template = "Capture the following into the org-roam knowledge base: $ARGUMENTS";
+    };
+    deepsearch = {
+      description = "Deeply map the knowledge base on a topic via the crawler subagent";
+      agent = "researcher";
+      template = "Dispatch the crawler subagent (task tool) to map the org-roam graph on: $ARGUMENTS. Then synthesize its digest into an answer: what exists, how the notes connect, and gaps worth researching. Cite notes as [Title](org-protocol://roam-node?id=UUID).";
+    };
+    map = {
+      description = "Crawl a topic and save a hub/index note linking what was found";
+      agent = "researcher";
+      template = "Dispatch the crawler subagent (task tool) to map the org-roam graph on: $ARGUMENTS. From its digest, propose a hub note: short title, #+filetags:, sections grouping the found notes with [[id:UUID][Title]] links. After the user confirms, save it with create_node and reply with the note as [Title](org-protocol://roam-node?id=UUID).";
     };
   };
 }

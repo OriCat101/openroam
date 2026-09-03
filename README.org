@@ -40,8 +40,14 @@ Agents (switch with =Tab=):
   explores backlinks, saves new findings as linked atomic notes.
 - *capture* — turns pasted text/URLs into well-formed org-roam notes linked
   into the existing graph.
+- *crawler* — read-only subagent (not Tab-switchable): dispatched by the
+  researcher via the =task= tool, it traverses the graph (searches, links,
+  backlinks) in its own context and returns a compact digest, keeping the main
+  session lean.
 
-Commands: =/related <topic>=, =/capture <text or url>=.
+Commands: =/related <topic>=, =/capture <text or url>=, =/deepsearch <topic>=
+(crawl the graph, then synthesize a cited answer), =/map <topic>= (crawl, then
+save a hub/index note linking what was found).
 
 * Opening cited notes in Emacs
 
