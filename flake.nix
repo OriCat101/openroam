@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     lumo-tamer-nix = {
-      url = "github:OriCat101/lumo-tamer-nix";
+      url = "github:OriCat101/lumo-tamer-nix/mistress";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

@@ -1,4 +1,10 @@
 { org-roam-mcp, researchTools }:
+let
+  noPreambleSuffix = ''
+
+
+    HARD RULE: when a tool call is needed, START your reply with the ```json block itself - zero words before it. An announcement like "searching now:" or "let me check" ends the turn right there and the call never goes out. Never end a reply on an announcement: either emit the tool call, or give the final answer. Commentary belongs after tool results, never before the JSON.'';
+in
 {
   "$schema" = "https://opencode.ai/config.json";
   provider.lumo = {
@@ -33,13 +39,13 @@
     researcher = {
       description = "Research assistant over the org-roam knowledge base";
       mode = "primary";
-      prompt = builtins.readFile ./prompts/researcher.md;
+      prompt = builtins.readFile ./prompts/researcher.md + noPreambleSuffix;
       tools = researchTools;
     };
     capture = {
       description = "Capture text/URLs into well-formed org-roam notes";
       mode = "primary";
-      prompt = builtins.readFile ./prompts/capture.md;
+      prompt = builtins.readFile ./prompts/capture.md + noPreambleSuffix;
       tools = researchTools;
     };
   };

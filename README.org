@@ -43,6 +43,36 @@ Agents (switch with =Tab=):
 
 Commands: =/related <topic>=, =/capture <text or url>=.
 
+* Opening cited notes in Emacs
+
+Agents cite notes as Markdown links to =org-protocol://roam-node?id=UUID=
+instead of plain text — most terminals (kitty, wezterm, iTerm2, foot, ghostty)
+render these as clickable OSC 8 hyperlinks, so clicking one in the TUI jumps
+straight to that node in Emacs, like clicking a web URL.
+
+This needs org-protocol wired up on the Emacs side:
+
+1. Emacs must be running as a server: =(server-start)= or =emacs --daemon=.
+2. =(require 'org-roam-protocol)= (pulls in =org-protocol= and registers the
+   =roam-node= handler org-roam ships).
+3. The OS must hand =org-protocol:= URIs to =emacsclient=. On Linux, register
+   a desktop entry as the scheme handler, e.g. via home-manager:
+
+   #+begin_src nix
+   xdg.desktopEntries.org-protocol = {
+     name = "org-protocol";
+     exec = "emacsclient %u";
+     terminal = false;
+     mimeType = [ "x-scheme-handler/org-protocol" ];
+   };
+   #+end_src
+
+   then =xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol=.
+
+Note-internal links (what =create_node=/=update_node= write into the =.org=
+files themselves) stay plain org-roam =[[id:UUID][Title]]= links — org-roam's
+own graph and backlinks depend on that syntax, not =org-protocol=.
+
 * Configuration
 
 Everything is overridable via environment variables:
