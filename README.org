@@ -81,8 +81,13 @@ Everything is overridable via environment variables:
 |------------------+--------------------------|
 | =LUMO_BASE_URL=    | =http://localhost:3003/v1= |
 | =LUMO_API_KEY=     | lumo-tamer's default key |
-| =ORG_ROAM_DIR=     | =~/roam=                   |
-| =ORG_ROAM_DB_PATH= | =~/.emacs.d/org-roam.db=   |
+| =ORG_ROAM_DIR=     | from Emacs, else =~/roam=  |
+| =ORG_ROAM_DB_PATH= | from Emacs, else =~/.emacs.d/org-roam.db= |
+
+When =ORG_ROAM_DIR= / =ORG_ROAM_DB_PATH= are unset, openroam asks a running
+Emacs daemon (via =emacsclient -e=) for =org-roam-directory= and
+=org-roam-db-location= and uses those; the hardcoded defaults above only kick
+in when no daemon answers. An explicitly set variable always wins.
 
 * Caveats
 

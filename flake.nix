@@ -56,14 +56,34 @@
             runtimeInputs = [
               pkgs.opencode
               pkgs.curl
+              pkgs.coreutils
               lumo-tamer
             ];
             text = ''
               export OPENCODE_CONFIG="${configJson}"
               export LUMO_BASE_URL="''${LUMO_BASE_URL:-http://localhost:3003/v1}"
               export LUMO_API_KEY="''${LUMO_API_KEY:-your-super-secret-key}"
-              export ORG_ROAM_DIR="''${ORG_ROAM_DIR:-$HOME/roam}"
-              export ORG_ROAM_DB_PATH="''${ORG_ROAM_DB_PATH:-$HOME/.emacs.d/org-roam.db}"
+
+              roam_var_from_emacs() {
+                command -v emacsclient >/dev/null 2>&1 || return 1
+                local val
+                val=$(timeout 2 emacsclient -e \
+                  "(if (and (boundp '$1) (symbol-value '$1)) (expand-file-name (symbol-value '$1)) \"\")" \
+                  2>/dev/null) || return 1
+                val=''${val#\"}
+                val=''${val%\"}
+                case $val in /*) ;; *) return 1 ;; esac
+                printf '%s' "$val"
+              }
+
+              if [ -z "''${ORG_ROAM_DIR:-}" ]; then
+                ORG_ROAM_DIR=$(roam_var_from_emacs org-roam-directory) || ORG_ROAM_DIR="$HOME/roam"
+              fi
+              export ORG_ROAM_DIR
+              if [ -z "''${ORG_ROAM_DB_PATH:-}" ]; then
+                ORG_ROAM_DB_PATH=$(roam_var_from_emacs org-roam-db-location) || ORG_ROAM_DB_PATH="$HOME/.emacs.d/org-roam.db"
+              fi
+              export ORG_ROAM_DB_PATH
               export LUMO_TAMER_HOME="''${LUMO_TAMER_HOME:-''${XDG_STATE_HOME:-$HOME/.local/state}/lumo-tamer}"
 
               if [ ! -f "$LUMO_TAMER_HOME/config.yaml" ]; then
