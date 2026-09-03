@@ -1,0 +1,70 @@
+#+title: openroam
+
+A research & note-taking agent for [[https://www.orgroam.com/][org-roam]], built as a customized
+[[https://opencode.ai][opencode]] talking to Proton Lumo through [[https://github.com/ZeroTricks/lumo-tamer][lumo-tamer]].
+
+One flake bundles everything: opencode, the generated config (provider, agents,
+commands), a Nix-packaged [[https://github.com/aserranoni/org-roam-mcp][org-roam-mcp]] server that gives the agent
+=search_nodes=, =get_node=, =get_backlinks=, =list_files=, =create_node=,
+=update_node= and =add_link= over your knowledge base — and the lumo-tamer
+server itself (via [[https://github.com/OriCat101/lumo-tamer-nix][lumo-tamer-nix]]).
+
+* Prerequisites
+
+A running lumo-tamer server with custom tools enabled — in its =config.yaml=
+(=~/.local/state/lumo-tamer/config.yaml=):
+
+#+begin_src yaml
+server:
+  apiKey: "your-super-secret-key"
+  customTools:
+    enabled: true        # required: opencode is tool-driven
+  instructions:
+    injectInto: "last"   # keep tool instructions fresh in long sessions
+#+end_src
+
+#+begin_src sh
+nix run github:OriCat101/openroam#server
+#+end_src
+
+* Usage
+
+#+begin_src sh
+nix run github:OriCat101/openroam          # opens in $ORG_ROAM_DIR (default ~/roam)
+nix run github:OriCat101/openroam -- ~/some/other/dir
+#+end_src
+
+Agents (switch with =Tab=):
+
+- *researcher* — searches your notes before answering, cites them by title,
+  explores backlinks, saves new findings as linked atomic notes.
+- *capture* — turns pasted text/URLs into well-formed org-roam notes linked
+  into the existing graph.
+
+Commands: =/related <topic>=, =/capture <text or url>=.
+
+* Configuration
+
+Everything is overridable via environment variables:
+
+| Variable         | Default                  |
+|------------------+--------------------------|
+| =LUMO_BASE_URL=    | =http://localhost:3003/v1= |
+| =LUMO_API_KEY=     | lumo-tamer's default key |
+| =ORG_ROAM_DIR=     | =~/roam=                   |
+| =ORG_ROAM_DB_PATH= | =~/.emacs.d/org-roam.db=   |
+
+* Caveats
+
+- *Tool calling is experimental* in lumo-tamer (tools are injected as text
+  instructions and parsed back out of Lumo's replies). It can misroute or fail;
+  the agent tool set is deliberately kept small to help. =lumo-max= behaves best.
+- *Lumo's context is small* (~22k tokens warning level). Keep sessions short,
+  start a new one per topic.
+- *DB staleness*: org-roam only re-indexes files saved inside Emacs. After the
+  agent creates notes, run =M-x org-roam-db-sync= (or
+  =emacsclient -e '(org-roam-db-sync)'=) to make them visible to org-roam.
+- Notes created by the agent get proper =:ID:= properties from org-roam-mcp,
+  but review them — it's a young project.
+- Optional: set =server.enableWebSearch: true= in lumo-tamer's config to let
+  Lumo use Proton's native web search during research.

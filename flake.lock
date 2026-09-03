@@ -1,0 +1,100 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "lumo-tamer": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785154193,
+        "narHash": "sha256-/B6AZ9C3k23tSadjcumV+y3TmZwEDgVHvOAOEQ68w1E=",
+        "owner": "ZeroTricks",
+        "repo": "lumo-tamer",
+        "rev": "da987136f7e0d05c989f3247ee62c4e75c84881e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ZeroTricks",
+        "ref": "v0.6.0",
+        "repo": "lumo-tamer",
+        "type": "github"
+      }
+    },
+    "lumo-tamer-nix": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "lumo-tamer": "lumo-tamer",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788437584,
+        "narHash": "sha256-CB657L6btKFcr8RBGgsWgGVl9WPoO1Ocj9TPLobYk8Y=",
+        "owner": "OriCat101",
+        "repo": "lumo-tamer-nix",
+        "rev": "4550def4cc74a0e123b4ccce6ab9b8cc19b91121",
+        "type": "github"
+      },
+      "original": {
+        "owner": "OriCat101",
+        "repo": "lumo-tamer-nix",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1788316716,
+        "narHash": "sha256-bc7rSpXIdn9QWGNqfWcPZWOhEVF8NoeAZkWq0XWnf/k=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3ed67ec0a4d3c7ab4ae1f04f8ee8df07bfa506a2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "lumo-tamer-nix": "lumo-tamer-nix",
+        "nixpkgs": "nixpkgs"
+      }
+    },
+    "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
