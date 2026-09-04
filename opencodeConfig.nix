@@ -34,6 +34,7 @@ in
   };
   model = "lumo/lumo-max";
   small_model = "lumo/lumo-lite";
+  default_agent = "researcher";
 
   mcp.org-roam = {
     type = "local";
