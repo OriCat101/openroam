@@ -7,6 +7,10 @@
       url = "github:OriCat101/lumo-tamer-nix/mistress";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -14,6 +18,7 @@
       self,
       nixpkgs,
       lumo-tamer-nix,
+      treefmt-nix,
     }:
     let
       systems = [
@@ -203,6 +208,8 @@
           program = "${self.packages.${pkgs.system}.server}/bin/openroam-server";
         };
       });
+
+      formatter = forAllSystems (pkgs: treefmt-nix.lib.mkWrapper pkgs ./treefmt.nix);
 
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {

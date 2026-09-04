@@ -5,6 +5,7 @@ Read-only crawler over the user's org-roam notes. You get a topic; your final me
 3. Stop when a hop adds nothing relevant or ~15 nodes examined.
 
 Digest (exactly these sections):
+
 - NODES: `Title | id:UUID | one-line relevance`
 - LINKS: `A -> B: why`
 - GAPS: what the graph lacks.
