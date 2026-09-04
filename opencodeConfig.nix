@@ -1,4 +1,8 @@
-{ org-roam-mcp, researchTools }:
+{
+  org-roam-mcp,
+  emacs-mcp,
+  researchTools,
+}:
 let
   noPreambleSuffix = ''
 
@@ -32,6 +36,11 @@ in
       ORG_ROAM_DIR = "{env:ORG_ROAM_DIR}";
     };
   };
+  mcp.emacs = {
+    type = "local";
+    command = [ "${emacs-mcp}/bin/emacs-mcp" ];
+    enabled = true;
+  };
 
   agent = {
     build.disable = true;
@@ -46,9 +55,7 @@ in
       description = "Capture text/URLs into well-formed org-roam notes";
       mode = "primary";
       prompt = builtins.readFile ./prompts/capture.md + noPreambleSuffix;
-      tools = researchTools // {
-        task = false;
-      };
+      tools = researchTools;
     };
     crawler = {
       description = "Read-only graph crawler: maps a topic across the org-roam graph and returns a digest";
@@ -58,6 +65,7 @@ in
         "org-roam_create_node" = false;
         "org-roam_update_node" = false;
         "org-roam_add_link" = false;
+        "emacs_syncdb" = false;
         task = false;
       };
     };

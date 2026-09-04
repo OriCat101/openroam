@@ -29,6 +29,12 @@
         let
           org-roam-mcp = import ./org-roam-mcp.nix { inherit pkgs; };
 
+          emacs-mcp = pkgs.writeShellApplication {
+            name = "emacs-mcp";
+            runtimeInputs = [ (pkgs.python3.withPackages (ps: [ ps.mcp ])) ];
+            text = ''exec python3 ${./emacs-mcp.py}'';
+          };
+
           # Tools kept lean on purpose: lumo-tamer's tool calling is experimental
           # and Lumo's context is small; every enabled tool costs schema tokens.
           researchTools = {
@@ -40,7 +46,7 @@
             todoread = false;
           };
 
-          opencodeConfig = import ./opencodeConfig.nix { inherit org-roam-mcp researchTools; };
+          opencodeConfig = import ./opencodeConfig.nix { inherit org-roam-mcp emacs-mcp researchTools; };
           configJson = (pkgs.formats.json { }).generate "opencode.json" opencodeConfig;
 
           lumo-tamer = lumo-tamer-nix.packages.${pkgs.system}.lumo-tamer;
@@ -98,6 +104,12 @@
                   enabled: true
                 instructions:
                   injectInto: "last"
+
+              # A message starting with "/" (or "tamer ") would otherwise be swallowed
+              # by lumo-tamer's command interceptor; "/logout" even exits the server,
+              # killing every in-flight agent stream.
+              commands:
+                enabled: false
               EOF
               fi
 
