@@ -1,3 +1,4 @@
 result/*
 .claude/
 /__pycache__
+/result

@@ -32,11 +32,9 @@
           emacs-mcp = pkgs.writeShellApplication {
             name = "emacs-mcp";
             runtimeInputs = [ (pkgs.python3.withPackages (ps: [ ps.mcp ])) ];
-            text = ''exec python3 ${./emacs-mcp.py}'';
+            text = "exec python3 ${./emacs-mcp.py}";
           };
 
-          # Tools kept lean on purpose: lumo-tamer's tool calling is experimental
-          # and Lumo's context is small; every enabled tool costs schema tokens.
           researchTools = {
             bash = false;
             edit = false;
@@ -63,6 +61,7 @@
               pkgs.opencode
               pkgs.curl
               pkgs.coreutils
+              pkgs.gnugrep
               lumo-tamer
             ];
             text = ''
@@ -92,9 +91,36 @@
               export ORG_ROAM_DB_PATH
               export LUMO_TAMER_HOME="''${LUMO_TAMER_HOME:-''${XDG_STATE_HOME:-$HOME/.local/state}/lumo-tamer}"
 
-              if [ ! -f "$LUMO_TAMER_HOME/config.yaml" ]; then
-                mkdir -p "$LUMO_TAMER_HOME"
-                cat > "$LUMO_TAMER_HOME/config.yaml" <<EOF
+              config_yaml() {
+                cat <<EOF
+              # openroam:managed v2 — delete this file to have openroam regenerate it
+              auth:
+                method: login
+
+              server:
+                apiKey: "your-super-secret-key"
+                customTools:
+                  enabled: true
+                instructions:
+                  injectInto: "last"
+                reasoning:
+                  # Thinking is request-driven: opencode sends reasoning_effort only
+                  # when a thinking variant is active. Keep the server default off.
+                  default: "none"
+                  # Forward Lumo's thinking tokens so opencode can render them.
+                  surfaceThinking: true
+
+              # A message starting with "/" (or "tamer ") would otherwise be swallowed
+              # by lumo-tamer's command interceptor; "/logout" even exits the server,
+              # killing every in-flight agent stream.
+              commands:
+                enabled: false
+              EOF
+              }
+
+              # Byte-exact copy of what openroam previously wrote, to detect unmodified configs.
+              legacy_config_yaml() {
+                cat <<EOF
               auth:
                 method: login
 
@@ -111,6 +137,21 @@
               commands:
                 enabled: false
               EOF
+              }
+
+              mkdir -p "$LUMO_TAMER_HOME"
+              cfg="$LUMO_TAMER_HOME/config.yaml"
+              if [ ! -f "$cfg" ]; then
+                config_yaml > "$cfg"
+              elif [ "$(cat "$cfg")" = "$(legacy_config_yaml)" ]; then
+                # pristine older openroam config: safe to upgrade in place
+                config_yaml > "$cfg"
+              elif ! grep -q surfaceThinking "$cfg"; then
+                {
+                  echo "note: to see Lumo's thinking in the TUI, add to $cfg under 'server:':"
+                  echo "  reasoning:"
+                  echo "    surfaceThinking: true"
+                } >&2
               fi
 
               health_url="''${LUMO_BASE_URL%/v1}/health"

@@ -30,6 +30,8 @@ server:
     enabled: true        # required: opencode is tool-driven
   instructions:
     injectInto: "last"   # keep tool instructions fresh in long sessions
+  reasoning:
+    surfaceThinking: true  # show Lumo's thinking in the TUI
 #+end_src
 
 #+begin_src sh
@@ -57,6 +59,15 @@ Agents (switch with =Tab=):
 Commands: =/related <topic>=, =/capture <text or url>=, =/deepsearch <topic>=
 (crawl the graph, then synthesize a cited answer), =/map <topic>= (crawl, then
 save a hub/index note linking what was found).
+
+** Thinking
+
+=lumo-max= has a =high= thinking variant (Lumo 2.0 reasoning mode) that renders
+as a collapsible thinking block in the TUI. The *researcher* agent and
+=/deepsearch= use it by default; everywhere else it's off until you cycle
+variants in opencode (the =variant_cycle= keybinding). Note lumo-tamer only
+accepts =reasoning_effort= values =none=/=low=/=medium=/=high= — there is no
+=max= effort.
 
 * Opening cited notes in Emacs
 
@@ -110,7 +121,11 @@ in when no daemon answers. An explicitly set variable always wins.
   instructions and parsed back out of Lumo's replies). It can misroute or fail;
   the agent tool set is deliberately kept small to help. =lumo-max= behaves best.
 - *Lumo's context is small* (~22k tokens warning level). Keep sessions short,
-  start a new one per topic.
+  start a new one per topic. Thinking output counts against it too — cycle the
+  variant off for long tool-heavy sessions.
+- *Existing configs*: openroam only upgrades an untouched generated
+  =config.yaml=. If you've edited yours, add the =reasoning:= block above by
+  hand (or delete the file to regenerate it) to see thinking in the TUI.
 - *DB staleness*: org-roam only re-indexes files saved inside Emacs. After the
   agent creates notes, run =M-x org-roam-db-sync= (or
   =emacsclient -e '(org-roam-db-sync)'=) to make them visible to org-roam.
