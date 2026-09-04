@@ -19,28 +19,20 @@ Additionally by default Lumo-Tamer does not create persistent Lumo sessions,
 so session management is purely local, and does not persist on Proton's servers.
 
 * Prerequisites
+** Emacs daemon
+- [[https://www.orgroam.com/manual.html][org-roam]] set up with an indexed knowledge base.
+- Emacs running as a [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Emacs-Server.html][daemon/server]] — openroam asks it for your org-roam paths.
+- [[https://github.com/hasu/notdeft][NotDeft]] with its Xapian backend built — powers the agent's fuzzy full-text
+  search.
+- [[https://www.orgroam.com/manual.html#Roam-Protocol][org-roam-protocol]] for clickable citations (see [[*Opening cited notes in Emacs]]).
 
-A running lumo-tamer server with custom tools enabled — in its =config.yaml=
-(=~/.local/state/lumo-tamer/config.yaml=):
-
-#+begin_src yaml
-server:
-  apiKey: "your-super-secret-key"
-  customTools:
-    enabled: true        # required: opencode is tool-driven
-  instructions:
-    injectInto: "last"   # keep tool instructions fresh in long sessions
-  reasoning:
-    surfaceThinking: true  # show Lumo's thinking in the TUI
-#+end_src
-
-#+begin_src sh
-nix run github:OriCat101/openroam#server
-#+end_src
+Everything else (opencode, org-roam-mcp, the lumo-tamer server) ships with the
+flake.
 
 * Usage
 
 #+begin_src sh
+nix run github:OriCat101/openroam#server   # start the bundled lumo-tamer server
 nix run github:OriCat101/openroam          # opens in $ORG_ROAM_DIR (default ~/roam)
 nix run github:OriCat101/openroam -- ~/some/other/dir
 #+end_src
