@@ -1,13 +1,22 @@
 #+title: openroam
 
 A research & note-taking agent for [[https://www.orgroam.com/][org-roam]], built as a customized
-[[https://opencode.ai][opencode]] talking to Proton Lumo through [[https://github.com/ZeroTricks/lumo-tamer][lumo-tamer]].
+[[https://opencode.ai][opencode]] talking to [[https://proton.me/lumo][Proton Lumo]] through [[https://github.com/ZeroTricks/lumo-tamer][lumo-tamer]].
 
 One flake bundles everything: opencode, the generated config (provider, agents,
 commands), a Nix-packaged [[https://github.com/aserranoni/org-roam-mcp][org-roam-mcp]] server that gives the agent
 =search_nodes=, =get_node=, =get_backlinks=, =list_files=, =create_node=,
 =update_node= and =add_link= over your knowledge base — and the lumo-tamer
 server itself (via [[https://github.com/OriCat101/lumo-tamer-nix][lumo-tamer-nix]]).
+
+** why lumo?
+In our org-roam are over 1000 notes ranging from shopping lists to software license keys.
+I don't want this to go into a training-set. Lumo is the closest thing we have to a
+"private" LLM. (okay self-hosting is an option and I would prefer this if I wasn't broke)
+[[https://proton.me/blog/lumo-security-model#user-to-lumo][Lumo encrypts your convo tight up until the LLM]] and is [[id:6bb757d6-da77-43fd-a455-23300b6a0f47][GDPR]] compliant.
+
+Additionally by default Lumo-Tamer does not create persistent Lumo sessions,
+so session management is purely local, and does not persist on Proton's servers.
 
 * Prerequisites
 
