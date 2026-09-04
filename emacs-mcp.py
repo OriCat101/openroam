@@ -4,6 +4,7 @@ To add a tool: write a @mcp.tool() function that builds an elisp form and
 returns eval_in_emacs(form). Interpolate string arguments with quote() only.
 """
 
+import json
 import subprocess
 
 from mcp.server.fastmcp import FastMCP
@@ -45,6 +46,30 @@ def syncdb() -> str:
     if result.startswith("emacs error:"):
         return result
     return "org-roam database synced"
+
+
+@mcp.tool(name="org-roam_search_nodes_fuzzy")
+def search_nodes_fuzzy(query: str, max_results: int = 20) -> str:
+    """Fuzzy full-text search across notes via NotDeft's Xapian index.
+
+    Words are stemmed, so inexact forms match. Xapian query syntax is
+    supported: "quoted phrases", AND/OR/NOT, wildcards like word*, and
+    prefixes like title:foo or tag:bar. Returns matching note file paths,
+    best matches first.
+    """
+    form = (
+        f"(mapconcat #'identity"
+        f" (seq-take (notdeft-list-files-by-query {quote(query)}) {int(max_results)})"
+        f' "\\n")'
+    )
+    result = eval_in_emacs(form)
+    if result.startswith("emacs error:"):
+        return result
+    try:
+        files = json.loads(result)
+    except ValueError:
+        return result
+    return files if files else "no matches"
 
 
 mcp.run()
