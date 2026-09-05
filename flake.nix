@@ -32,13 +32,7 @@
       packages = forAllSystems (
         pkgs:
         let
-          org-roam-mcp = import ./org-roam-mcp.nix { inherit pkgs; };
-
-          emacs-mcp = pkgs.writeShellApplication {
-            name = "emacs-mcp";
-            runtimeInputs = [ (pkgs.python3.withPackages (ps: [ ps.mcp ])) ];
-            text = "exec python3 ${./emacs-mcp.py}";
-          };
+          inherit (import ./mcp { inherit pkgs; }) org-roam-mcp emacs-mcp;
 
           researchTools = {
             bash = false;
