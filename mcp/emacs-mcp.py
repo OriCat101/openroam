@@ -4,6 +4,7 @@ To add a tool: write a @mcp.tool() function that builds an elisp form and
 returns eval_in_emacs(form). Interpolate string arguments with quote() only.
 """
 
+import datetime
 import json
 import subprocess
 
@@ -70,6 +71,29 @@ def search_nodes_fuzzy(query: str, max_results: int = 20) -> str:
     except ValueError:
         return result
     return files if files else "no matches"
+
+
+@mcp.tool(name="org-roam_open_daily_note")
+def open_daily_note(date: str = "") -> str:
+    """Open a daily note in the running Emacs, creating it if it doesn't exist.
+
+    date is YYYY-MM-DD; omit it to open today's note. Returns the note's
+    file path.
+    """
+    if date:
+        try:
+            datetime.date.fromisoformat(date)
+        except ValueError:
+            return f"error: invalid date {date!r}, expected YYYY-MM-DD"
+        goto = (
+            f'(org-roam-dailies--capture (org-time-string-to-time {quote(date)}) t "d")'
+        )
+    else:
+        goto = '(org-roam-dailies--capture (current-time) t "d")'
+    result = eval_in_emacs(f"(progn {goto} (buffer-file-name))")
+    if result.startswith("emacs error:"):
+        return result
+    return result
 
 
 mcp.run()
