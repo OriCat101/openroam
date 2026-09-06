@@ -24,7 +24,7 @@ in
       lumo-max = {
         name = "Lumo Max";
         reasoning = true;
-        # and lumo-tamer rejects reasoning_effort "max" with HTTP 400.
+        options.reasoningEffort = "high";
         variants = {
           high.reasoningEffort = "high";
           max.disabled = true;
@@ -57,7 +57,6 @@ in
     researcher = {
       description = "Research assistant over the org-roam knowledge base";
       mode = "primary";
-      variant = "high";
       prompt = builtins.readFile ./prompts/researcher.md + noPreambleSuffix;
       tools = researchTools;
     };
@@ -95,7 +94,6 @@ in
     deepsearch = {
       description = "Deeply map the knowledge base on a topic via the crawler subagent";
       agent = "researcher";
-      variant = "high";
       template = "Dispatch the crawler subagent (task tool) to map the org-roam graph on: $ARGUMENTS. Then synthesize its digest into an answer: what exists, how the notes connect, and gaps worth researching. Cite notes as [Title](org-protocol://roam-node?id=UUID).";
     };
     map = {

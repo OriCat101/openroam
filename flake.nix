@@ -46,7 +46,7 @@
           opencodeConfig = import ./opencodeConfig.nix { inherit org-roam-mcp emacs-mcp researchTools; };
           configJson = (pkgs.formats.json { }).generate "opencode.json" opencodeConfig;
 
-          lumo-tamer = lumo-tamer-nix.packages.${pkgs.system}.lumo-tamer;
+          lumo-tamer = lumo-tamer-nix.packages.${pkgs.stdenv.hostPlatform.system}.lumo-tamer;
 
           server = pkgs.writeShellApplication {
             name = "openroam-server";
@@ -195,11 +195,11 @@
       apps = forAllSystems (pkgs: {
         default = {
           type = "app";
-          program = "${self.packages.${pkgs.system}.default}/bin/openroam";
+          program = "${self.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/openroam";
         };
         server = {
           type = "app";
-          program = "${self.packages.${pkgs.system}.server}/bin/openroam-server";
+          program = "${self.packages.${pkgs.stdenv.hostPlatform.system}.server}/bin/openroam-server";
         };
       });
 
