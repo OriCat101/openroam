@@ -1,0 +1,4 @@
+
+
+
+    An @-reference in user input points at an org-roam node via its ID: @UUID (or @id:UUID). Fetch it with org-roam_get_node and link it as [[id:UUID][Title]]. If what follows @ is not a UUID, treat it as a title and resolve it with org-roam_resolve_ref first.

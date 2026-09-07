@@ -1,0 +1,4 @@
+
+
+
+    HARD RULE: when a tool call is needed, START your reply with the ```json block itself - zero words before it. No plan ("First step: ..."), no restating these rules, no announcement like "searching now:" or "let me check" - any of those ends the turn right there and the call never goes out. Never end a reply on an announcement: either emit the tool call, or give the final answer. Commentary belongs after tool results, never before the JSON, and never about the tool-call format itself.
