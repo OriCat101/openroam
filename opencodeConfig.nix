@@ -1,12 +1,20 @@
 {
   org-roam-mcp,
   emacs-mcp,
-  researchTools,
-}:
+ }:
 let
-  noPreambleSuffix = builtins.readFile ./prompts/noPreambleSuffix.txt ;
+  noPreambleSuffix = builtins.readFile ./prompts/noPreambleSuffix.txt;
   atRefSuffix = builtins.readFile ./prompts/atRefSuffix.txt;
   agentSuffix = atRefSuffix + noPreambleSuffix;
+
+  researchTools = {
+    bash = false;
+    edit = false;
+    write = false;
+    patch = false;
+    todowrite = false;
+    todoread = false;
+  };
 
   # Section subagents get only the tools they need.
   sectionToolsOff = researchTools // {
@@ -31,7 +39,7 @@ let
     "emacs_org_list_headings" = false;
   };
 
-   agentArgs = {
+  agentArgs = {
     prompts = ./prompts;
     inherit
       noPreambleSuffix
@@ -41,10 +49,16 @@ let
       sectionToolsOff
       ;
   };
-  agents = import ./agents agentArgs;
+
+  agent = import ./agents agentArgs;
 in
 {
+  inherit agent;
   "$schema" = "https://opencode.ai/config.json";
+  model = "lumo/lumo-max";
+  small_model = "lumo/lumo-lite";
+  default_agent = "researcher";
+
   provider.lumo = {
     npm = "@ai-sdk/openai-compatible";
     name = "Lumo (lumo-tamer)";
@@ -52,6 +66,7 @@ in
       baseURL = "{env:LUMO_BASE_URL}";
       apiKey = "{env:LUMO_API_KEY}";
     };
+
     models = {
       lumo.name = "Lumo (auto)";
       lumo-lite.name = "Lumo Lite";
@@ -66,26 +81,24 @@ in
       };
     };
   };
-  model = "lumo/lumo-max";
-  small_model = "lumo/lumo-lite";
-  default_agent = "researcher";
 
-  mcp.org-roam = {
-    type = "local";
-    command = [ "${org-roam-mcp}/bin/org-roam-mcp" ];
-    enabled = true;
-    environment = {
-      ORG_ROAM_DB_PATH = "{env:ORG_ROAM_DB_PATH}";
-      ORG_ROAM_DIR = "{env:ORG_ROAM_DIR}";
+  mcp = {
+    org-roam = {
+      type = "local";
+      command = [ "${org-roam-mcp}/bin/org-roam-mcp" ];
+      enabled = true;
+      environment = {
+        ORG_ROAM_DB_PATH = "{env:ORG_ROAM_DB_PATH}";
+        ORG_ROAM_DIR = "{env:ORG_ROAM_DIR}";
+      };
+    };
+
+    emacs = {
+      type = "local";
+      command = [ "${emacs-mcp}/bin/emacs-mcp" ];
+      enabled = true;
     };
   };
-  mcp.emacs = {
-    type = "local";
-    command = [ "${emacs-mcp}/bin/emacs-mcp" ];
-    enabled = true;
-  };
-
-  agent = agents;
 
   command = {
     format = {
