@@ -161,7 +161,7 @@
                 done
                 if [ -z "$up" ]; then
                   echo "lumo-tamer failed to start; see $LUMO_TAMER_HOME/openroam-server.log" >&2
-                  echo "first run may need an interactive login: nix run github:OriCat101/lumo.el#server" >&2
+                  echo "if this is the first run then you first need to login: nix run github:OriCat101/lumo-tamer-nix/mistress -- auth login" >&2
                   exit 1
                 fi
               fi
