@@ -44,11 +44,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788456274,
-        "narHash": "sha256-+pjTMPYN7ioo4GyGlV1e6FQXKdDa8P/M8+blDfo2FkU=",
+        "lastModified": 1788871541,
+        "narHash": "sha256-CP9hZYSzjVw0Uj3oguIOqFm/AvV7s4wNFlZLVJq9U/w=",
         "owner": "OriCat101",
         "repo": "lumo-tamer-nix",
-        "rev": "3e6f433e039e8cd9a8ff56a7aee7d2718824472d",
+        "rev": "21f7346effcf41bb937d98275324d18e02ce9527",
         "type": "github"
       },
       "original": {
