@@ -34,7 +34,7 @@
         let
           inherit (import ./mcp { inherit pkgs; }) org-roam-mcp emacs-mcp;
 
-          opencodeConfig = import ./opencodeConfig.nix { inherit org-roam-mcp emacs-mcp researchTools; };
+          opencodeConfig = import ./opencodeConfig.nix { inherit org-roam-mcp emacs-mcp; };
           configJson = (pkgs.formats.json { }).generate "opencode.json" opencodeConfig;
           lumo-tamer = lumo-tamer-nix.packages.${pkgs.stdenv.hostPlatform.system}.lumo-tamer;
 
